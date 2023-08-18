@@ -13,11 +13,18 @@ colnames(data) <- gsub("^\\s+|\\s+$", "", colnames(data))
 str(data)
 
 # Data Cleaning
+columns_to_remove <- c("Source", "Gender_Source","Date_of_Birth","Date_of_Joining","Source","Gender_Source","Last_Start_Date","Last_End_Date","Last_Education_Subject","Last_Office","Last_Field_of_Experience","Last_Category_of_Experience")
+# Remove specified columns
+data <- data[, !(names(data) %in% columns_to_remove)]
+column_titles <- names(data)
+print(column_titles)
+
 # Convert date columns to proper date format
-data$Date_of_Birth <- as.Date(data$Date_of_Birth)
-data$Date_of_Joining <- as.Date(data$Date_of_Joining)
-data$Last_Start_Date <- as.Date(data$Last_Start_Date)
-data$Last_End_Date <- as.Date(data$Last_End_Date)
+#data$Date_of_Birth <- as.Date(data$Date_of_Birth)
+#data$Date_of_Joining <- as.Date(data$Date_of_Joining)
+#data$Last_Start_Date <- as.Date(data$Last_Start_Date)
+#data$Last_End_Date <- as.Date(data$Last_End_Date)
+
 
 # Data Summaries
 # Summary statistics for numeric columns
