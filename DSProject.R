@@ -3,10 +3,13 @@ library(dplyr)   # For data manipulation
 library(tidyr)   # For data tidying
 library(ggplot2) # For data visualization
 
+ # For working with dates
+
+
 # Load data from CSV
 data <- read.csv("/Users/diyajames/Desktop/ias-release-main/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
+#data <- read.csv("C:/Users/anish/Downloads/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
 
-# Correct column names by removing leading spaces
 colnames(data) <- gsub("^\\s+|\\s+$", "", colnames(data))
 
 # Examine the structure of the data
@@ -212,6 +215,35 @@ posting_table <- posting_counts[-(1:27), , drop = FALSE]
 print(posting_table)
 
 
+#Question: Is there a significant difference in the ages of individuals based on their place of domicile or mother tongue?
+print(data)
+group_a <- data %>%
+  filter(Place_of_Domicile == "Karnataka") %>%
+  mutate(Age = floor((as.numeric(Sys.Date() - as.Date(Date_of_Birth, format = "%Y-%m-%d")))/365.25))
+
+group_b <- data %>%
+  filter(Place_of_Domicile == "Bihar") %>%
+  mutate(Age = floor((as.numeric(Sys.Date() - as.Date(Date_of_Birth, format = "%Y-%m-%d")))/365.25))
+
+# Correct column names by removing leading spaces
+View(group_a)
+t_test_result <- t.test(group_a$Age, group_b$Age)
+
+# Step 4: Calculate T-Statistic and P-Value
+t_statistic <- t_test_result$statistic
+p_value <- t_test_result$p.value
+print(p_value)
+# Step 5: Interpret Results
+if (p_value < 0.05) {
+  conclusion <- "Reject the null hypothesis. There is a significant difference in ages."
+} else {
+  conclusion <- "Fail to reject the null hypothesis. There is no significant difference in ages."
+}
+
+# Print results
+cat("T-Statistic:", t_statistic, "\n")
+cat("P-Value:", p_value, "\n")
+cat("Conclusion:", conclusion, "\n")
 
 
 
