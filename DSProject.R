@@ -7,10 +7,9 @@ library(ggplot2) # For data visualization
 
 
 # Load data from CSV
-data <- read.csv("/Users/diyajames/Desktop/ias-release-main/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
-#data <- read.csv("C:/Users/anish/Downloads/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
+#data <- read.csv("/Users/diyajames/Desktop/ias-release-main/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
+data <- read.csv("C:/Users/anish/Downloads/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
 
-colnames(data) <- gsub("^\\s+|\\s+$", "", colnames(data))
 
 # Examine the structure of the data
 str(data)
@@ -215,36 +214,50 @@ posting_table <- posting_counts[-(1:27), , drop = FALSE]
 print(posting_table)
 
 
+
+
 #Question: Is there a significant difference in the ages of individuals based on their place of domicile or mother tongue?
-print(data)
+data <- data %>%
+  mutate(Age = floor((as.numeric(as.Date(Date_of_Joining, format = "%Y-%m-%d") - as.Date(Date_of_Birth, format = "%Y-%m-%d")))/365.25))
+
+# Filter groups
 group_a <- data %>%
-  filter(Place_of_Domicile == "Karnataka") %>%
-  mutate(Age = floor((as.numeric(Sys.Date() - as.Date(Date_of_Birth, format = "%Y-%m-%d")))/365.25))
+  filter(Place_of_Domicile == "Karnataka")
 
 group_b <- data %>%
-  filter(Place_of_Domicile == "Bihar") %>%
-  mutate(Age = floor((as.numeric(Sys.Date() - as.Date(Date_of_Birth, format = "%Y-%m-%d")))/365.25))
+  filter(Place_of_Domicile == "Bihar")
 
-# Correct column names by removing leading spaces
-View(group_a)
+# Perform t-test
 t_test_result <- t.test(group_a$Age, group_b$Age)
-
-# Step 4: Calculate T-Statistic and P-Value
-t_statistic <- t_test_result$statistic
 p_value <- t_test_result$p.value
-print(p_value)
-# Step 5: Interpret Results
+
+
+
+# Print results
+cat("P-Value:", p_value, "\n")
+cat("Glass's Delta:", glass_delta, "\n")
+cat("Cohen's d:", cohens_d, "\n")
+# Combine group_a and group_b data frames
+combined_groups <- rbind(group_a, group_b)
+
+# Print the combined data frame
+print(combined_groups)
+
+# Create visualization
+ggplot(combined_groups, aes(x = Place_of_Domicile, y = Age, fill = Place_of_Domicile)) +
+  geom_boxplot() +
+  labs(title = "Age Distribution by Place of Domicile",
+       x = "Place of Domicile",
+       y = "Age") +
+  theme_minimal()
+
+# Report findings
 if (p_value < 0.05) {
   conclusion <- "Reject the null hypothesis. There is a significant difference in ages."
 } else {
   conclusion <- "Fail to reject the null hypothesis. There is no significant difference in ages."
 }
-
-# Print results
-cat("T-Statistic:", t_statistic, "\n")
-cat("P-Value:", p_value, "\n")
 cat("Conclusion:", conclusion, "\n")
-
 
 
 
