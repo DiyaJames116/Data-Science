@@ -7,8 +7,8 @@ library(ggplot2) # For data visualization
 
 
 # Load data from CSV
-#data <- read.csv("/Users/diyajames/Desktop/ias-release-main/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
-data <- read.csv("C:/Users/anish/Downloads/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
+data <- read.csv("/Users/diyajames/Desktop/ias-release-main/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
+# data <- read.csv("C:/Users/anish/Downloads/ias-profile.csv", header = TRUE, stringsAsFactors = FALSE)
 
 
 # Examine the structure of the data
